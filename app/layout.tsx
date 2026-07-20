@@ -17,9 +17,14 @@ export default function RootLayout({ children }) {
             {/* Logo Desa */}
             <Link
               href="/"
-              className="text-xl font-bold text-green-700 hover:opacity-80 transition"
+              className="text-xl font-bold text-green-600 hover:opacity-80 transition"
             >
-              Desa Mekarjaya
+              <span className="text-lg md:text-xl font-bold leading-tight">
+                Desa Mekarjaya
+              </span>
+              <span className="text-lg md:text-base text-gray-500 block">
+                Kecamatan Purwasari, Kabupaten Karawang
+              </span>
             </Link>
 
             {/* MENU DEKTOP (Muncul di tablet/laptop, hilang di HP) */}
@@ -32,6 +37,9 @@ export default function RootLayout({ children }) {
               </Link>
               <Link href="/berita" className="hover:text-green-600 transition">
                 Kabar Desa
+              </Link>
+              <Link href="/login" className="hover:text-green-600 transition">
+                Masuk Admin
               </Link>
             </div>
 
@@ -91,6 +99,13 @@ export default function RootLayout({ children }) {
                 className="hover:text-green-600 transition py-1"
               >
                 Kabar Desa
+              </Link>
+              <Link
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                className="hover:text-green-600 transition py-1"
+              >
+                Masuk Admin
               </Link>
             </div>
           )}
