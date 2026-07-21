@@ -67,33 +67,33 @@ export default async function HomePage() {
                   Persuratan Online
                 </span>
               </a>
-              <a
-                href="#"
+              <Link
+                href="/transparansi"
                 className="p-3 bg-blue-50 rounded-xl hover:bg-blue-100 transition border border-blue-100"
               >
                 <div className="text-2xl mb-1">📊</div>
                 <span className="text-xs font-semibold text-blue-900">
                   Data Transparansi
                 </span>
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                href="/pengaduan"
                 className="p-3 bg-amber-50 rounded-xl hover:bg-amber-100 transition border border-amber-100"
               >
                 <div className="text-2xl mb-1">📞</div>
                 <span className="text-xs font-semibold text-amber-900">
                   Pengaduan Warga
                 </span>
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                href="/peta-desa"
                 className="p-3 bg-purple-50 rounded-xl hover:bg-purple-100 transition border border-purple-100"
               >
                 <div className="text-2xl mb-1">🗺️</div>
                 <span className="text-xs font-semibold text-purple-900">
                   Peta Desa
                 </span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

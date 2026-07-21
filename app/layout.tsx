@@ -4,7 +4,7 @@ import React, { useState } from "react"; // 2. Import useState untuk buka/tutup 
 import Link from "next/link";
 import "./globals.css";
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   // State untuk melacak apakah menu mobile sedang terbuka atau tertutup
   const [isOpen, setIsOpen] = useState(false);
 
