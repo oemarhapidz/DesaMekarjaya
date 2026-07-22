@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
@@ -21,8 +22,13 @@ export default function Navbar() {
       <nav className="rounded-[1.25rem] border border-slate-200/80 bg-white/85 px-4 py-3 shadow-[0_16px_48px_-24px_rgba(2,6,23,0.35)] backdrop-blur md:px-5">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-desa-primary text-lg font-black text-white shadow-lg shadow-desa-primary/20">
-              M
+            <div className="relative h-11 w-11 overflow-hidden rounded-2xl shadow-lg shadow-desa-primary/20">
+              <Image
+                src="/logo.png" // Ganti dengan path logo kamu di folder public
+                alt="Logo Desa Mekarjaya"
+                fill
+                className="object-cover"
+              />
             </div>
             <div>
               <span className="block font-medium text-gray-900">
@@ -43,7 +49,7 @@ export default function Navbar() {
                   href={link.href}
                   className={`rounded-[5rem] px-3.5 py-2 text-sm font-semibold transition ${
                     isActive
-                      ? "bg-green-700 text-white shadow-sm"
+                      ? "bg-gray-100 text-green-700 shadow-sm"
                       : "text-slate-600 hover:bg-gray-100 hover:text-green-700"
                   }`}
                 >

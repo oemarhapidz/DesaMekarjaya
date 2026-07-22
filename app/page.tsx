@@ -53,7 +53,7 @@ export default async function HomePage() {
 
           <h1 className="text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl drop-shadow-lg">
             Selamat datang di{" "}
-            <span className="text-green-700">Portal Digital</span> Desa
+            <span className="text-emerald-600">Portal Digital</span> Desa
             Mekarjaya
           </h1>
 
