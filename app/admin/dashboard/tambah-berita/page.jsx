@@ -2,9 +2,10 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { redirect } from "next/navigation";
+import { Send } from "react-feather";
 
 export default function TambahBeritaPage() {
-  // 🧠 Logika menyimpan berita langsung ke Supabase
+  // Logika menyimpan berita langsung ke Supabase
   async function handleTambahBerita(formData) {
     "use server"; // Berjalan di sisi server
 
@@ -118,9 +119,10 @@ export default function TambahBeritaPage() {
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full bg-green-700 text-white font-bold py-2.5 px-4 rounded-xl hover:bg-green-600 shadow-md transition duration-150"
+              className="w-full bg-green-700 text-white font-bold py-2.5 px-4 rounded-xl hover:bg-green-600 shadow-md transition duration-150 inline-flex items-center justify-center gap-2"
             >
-              🚀 Terbitkan Berita Sekarang
+              <Send size={16} aria-hidden="true" />
+              Terbitkan Berita Sekarang
             </button>
           </div>
         </form>

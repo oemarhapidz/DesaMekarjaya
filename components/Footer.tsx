@@ -1,5 +1,7 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { MapPin } from "react-feather";
 
 export default function Footer() {
   return (
@@ -8,8 +10,14 @@ export default function Footer() {
         <div className="mb-10 grid gap-8 md:grid-cols-4">
           <div className="space-y-4 md:col-span-2">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-desa-accent text-lg font-black text-slate-950">
-                M
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-transparent text-lg font-black text-slate-950">
+                <Image
+                  src="/logo-karawang.png"
+                  alt="Logo Desa Mekarjaya"
+                  width={44}
+                  height={44}
+                  className="h-11 w-11 object-contain"
+                />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-white">Desa Mekarjaya</h3>
@@ -83,8 +91,9 @@ export default function Footer() {
                   Peta Spasial Desa
                 </Link>
               </li>
-              <li className="pt-2 text-emerald-200/70">
-                📍 Kantor pelayanan Desa Mekarjaya
+              <li className="flex items-center gap-2 pt-2 text-emerald-200/70">
+                <MapPin size={14} aria-hidden="true" />
+                <span>Kantor pelayanan Desa Mekarjaya</span>
               </li>
             </ul>
           </div>

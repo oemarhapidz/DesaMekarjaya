@@ -10,10 +10,13 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.4",
+    "feather-icons": "^4.29.2",
+    "feather-icons-react": "^1.0.0",
     "leaflet": "^1.9.4",
     "next": "16.2.10",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-feather": "^2.0.10",
     "react-leaflet": "^5.0.0"
   },
   "devDependencies": {

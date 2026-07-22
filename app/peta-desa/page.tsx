@@ -3,7 +3,8 @@
 import React, { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { mockPetaLokasi, jenisConfig, PetaLokasiData } from "./mockData";
+import { Archive, Clipboard, Map, RefreshCw, Trash2, Truck } from "react-feather";
+import { mockPetaLokasi, jenisConfig, PetaLokasiData, JenisLokasiIcon } from "./mockData";
 
 // Import peta secara dinamis dengan ssr: false
 // Wajib karena Leaflet bergantung pada objek 'window' browser, tidak tersedia di server
@@ -12,7 +13,7 @@ const MapComponent = dynamic(() => import("./MapComponent"), {
   loading: () => (
     <div className="w-full h-full bg-gray-100 rounded-xl flex items-center justify-center">
       <div className="text-center space-y-3">
-        <div className="text-4xl animate-pulse">🗺️</div>
+        <Map className="mx-auto animate-pulse text-green-700" size={40} aria-hidden="true" />
         <p className="text-sm text-gray-500 font-medium">Memuat peta interaktif...</p>
       </div>
     </div>
@@ -22,6 +23,17 @@ const MapComponent = dynamic(() => import("./MapComponent"), {
 // Tipe filter yang bisa di-toggle
 type JenisLokasi = PetaLokasiData["jenis"];
 const SEMUA_JENIS: JenisLokasi[] = ["tempat_sampah", "pemilahan_sampah", "tps", "tpa"];
+const lokasiIconMap: Record<JenisLokasiIcon, React.ComponentType<{ size?: number; className?: string; "aria-hidden"?: boolean }>> = {
+  trash: Trash2,
+  refresh: RefreshCw,
+  truck: Truck,
+  home: Archive,
+};
+
+function LokasiIcon({ icon, size = 14, className = "" }: { icon: JenisLokasiIcon; size?: number; className?: string }) {
+  const Icon = lokasiIconMap[icon];
+  return <Icon size={size} className={className} aria-hidden={true} />;
+}
 
 export default function PetaDesaPage() {
   // TODO: ganti mockData dengan query Supabase ke tabel peta_lokasi_sampah
@@ -139,7 +151,10 @@ export default function PetaDesaPage() {
                       className="w-3 h-3 rounded-full flex-shrink-0"
                       style={{ backgroundColor: aktif ? cfg.color : "#d1d5db" }}
                     ></span>
-                    <span>{cfg.emoji} {cfg.label}</span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <LokasiIcon icon={cfg.icon} size={13} />
+                      {cfg.label}
+                    </span>
                     {/* Counter */}
                     <span
                       className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-black"
@@ -185,7 +200,7 @@ export default function PetaDesaPage() {
             {lokasiTampil.length === 0 ? (
               <div className="w-full h-full flex items-center justify-center bg-gray-50">
                 <div className="text-center space-y-3 p-8">
-                  <div className="text-5xl">🗺️</div>
+                  <Map className="mx-auto text-gray-400" size={48} aria-hidden="true" />
                   <h3 className="text-lg font-bold text-gray-700">Tidak ada lokasi ditampilkan</h3>
                   <p className="text-sm text-gray-400">
                     Aktifkan minimal satu jenis lokasi dari filter di atas.
@@ -203,7 +218,8 @@ export default function PetaDesaPage() {
             {/* LEGENDA */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
               <h3 className="font-bold text-sm text-gray-900 mb-3 flex items-center gap-1.5">
-                <span>🗂️</span> Keterangan Ikon
+                <Archive size={16} className="text-green-700" aria-hidden="true" />
+                Keterangan Ikon
               </h3>
               <div className="space-y-2">
                 {SEMUA_JENIS.map((jenis) => {
@@ -221,7 +237,10 @@ export default function PetaDesaPage() {
                         style={{ backgroundColor: cfg.color }}
                       ></span>
                       <span className="text-gray-700 font-medium leading-tight">
-                        {cfg.emoji} {cfg.label}
+                        <span className="inline-flex items-center gap-1.5">
+                          <LokasiIcon icon={cfg.icon} size={12} />
+                          {cfg.label}
+                        </span>
                       </span>
                     </div>
                   );
@@ -232,7 +251,8 @@ export default function PetaDesaPage() {
             {/* DAFTAR LOKASI YANG AKTIF */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
               <h3 className="font-bold text-sm text-gray-900 mb-3 flex items-center gap-1.5">
-                <span>📋</span> Daftar Lokasi
+                <Clipboard size={16} className="text-green-700" aria-hidden="true" />
+                Daftar Lokasi
                 <span className="ml-auto text-[10px] font-bold px-2 py-0.5 bg-green-50 text-green-700 rounded-full">
                   {lokasiTampil.length}
                 </span>
@@ -293,7 +313,7 @@ export default function PetaDesaPage() {
                 className="bg-white rounded-2xl shadow-sm border p-4 text-center transition hover:shadow-md"
                 style={{ borderColor: cfg.borderColor }}
               >
-                <div className="text-2xl mb-1">{cfg.emoji}</div>
+                <LokasiIcon icon={cfg.icon} size={24} className="mx-auto mb-1" />
                 <p
                   className="text-2xl font-black"
                   style={{ color: cfg.color }}

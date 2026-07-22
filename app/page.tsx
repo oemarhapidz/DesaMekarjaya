@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { BarChart2, Bell, FileText, Map, MapPin, User } from "react-feather";
 import { supabase } from "@/lib/supabase";
 
 export default async function HomePage() {
@@ -27,7 +28,7 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-12 pb-16">
-      {/* 🚀 HERO SECTION FULL BACKGROUND (ALA AMEZORA COFFEE) */}
+      {/* HERO SECTION FULL BACKGROUND (ALA AMEZORA COFFEE) */}
       <section className="-mt-24 relative min-h-[85vh] w-full flex items-center justify-start px-8 sm:px-16 lg:px-24">
         {/* 1. GAMBAR BACKGROUND HERO (JPEG/JPG) */}
         <Image
@@ -100,42 +101,45 @@ export default async function HomePage() {
               {
                 href: "/transparansi",
                 title: "Transparansi APBDes",
-                icon: "📊",
+                icon: BarChart2,
                 desc: "Pantau anggaran desa",
               },
               {
                 href: "/pengaduan",
                 title: "Pengaduan Warga",
-                icon: "📢",
+                icon: Bell,
                 desc: "Kirim dan cek status",
               },
               {
                 href: "/peta-desa",
                 title: "Peta Desa",
-                icon: "🗺️",
+                icon: Map,
                 desc: "Lokasi fasilitas desa",
               },
               {
                 href: "/berita",
                 title: "Kabar Desa",
-                icon: "📰",
+                icon: FileText,
                 desc: "Berita dan agenda",
               },
-            ].map((item) => (
-              <Link
-                key={item.title}
-                href={item.href}
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-0.5 hover:border-desa-primary/30 hover:bg-white"
-              >
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-desa-primary/10 text-xl">
-                  {item.icon}
-                </div>
-                <h3 className="text-sm font-bold text-slate-900">
-                  {item.title}
-                </h3>
-                <p className="mt-1 text-xs text-slate-500">{item.desc}</p>
-              </Link>
-            ))}
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-0.5 hover:border-desa-primary/30 hover:bg-white"
+                >
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-desa-primary/10 text-desa-primary">
+                    <Icon size={20} aria-hidden="true" />
+                  </div>
+                  <h3 className="text-sm font-bold text-slate-900">
+                    {item.title}
+                  </h3>
+                  <p className="mt-1 text-xs text-slate-500">{item.desc}</p>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -217,7 +221,7 @@ export default async function HomePage() {
                 Belum ada berita terbaru yang dipublikasikan.
               </div>
             ) : (
-              daftarBerita.map((item) => (
+              daftarBerita.slice(0, 2).map((item) => (
                 <article
                   key={item.id}
                   className="flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
@@ -258,7 +262,12 @@ export default async function HomePage() {
         <div className="space-y-5">
           <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm">
             <h3 className="flex items-center gap-2 border-b border-slate-100 pb-3 text-base font-bold text-slate-900">
-              <span className="text-xl">👤</span> Pimpinan Desa
+              <User
+                size={20}
+                className="text-desa-primary"
+                aria-hidden="true"
+              />{" "}
+              Pimpinan Desa
             </h3>
             <div className="mt-4 flex items-center gap-4">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-desa-primary/10 text-xl font-black text-desa-primary">
@@ -278,7 +287,12 @@ export default async function HomePage() {
 
           <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm">
             <h3 className="flex items-center gap-2 border-b border-slate-100 pb-3 text-base font-bold text-slate-900">
-              <span className="text-xl">📍</span> Peta Wilayah
+              <MapPin
+                size={20}
+                className="text-desa-primary"
+                aria-hidden="true"
+              />{" "}
+              Peta Wilayah
             </h3>
             <div className="mt-4 h-48 overflow-hidden rounded-2xl border border-slate-200">
               <iframe

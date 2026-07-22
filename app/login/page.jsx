@@ -1,5 +1,6 @@
 // app/login/page.jsx
 import Link from "next/link";
+import { Home } from "react-feather";
 import { supabase } from "@/lib/supabase";
 
 export default async function LoginPage() {
@@ -19,7 +20,9 @@ export default async function LoginPage() {
       <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 max-w-md w-full space-y-6">
         {/* Header Login */}
         <div className="text-center space-y-2">
-          <div className="text-4xl">🏛️</div>
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-green-50 text-green-700">
+            <Home size={28} aria-hidden="true" />
+          </div>
           <h2 className="text-2xl font-bold text-gray-950 tracking-tight">
             Sistem Informasi Desa
           </h2>

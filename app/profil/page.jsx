@@ -9,7 +9,7 @@ export default function ProfilPage() {
 
   return (
     <div className="-mt-24 min-h-screen bg-[#F8FAFC] pb-20">
-      {/* 🚀 1. HERO HEADER HIJAU DENGAN LENGKUNGAN (WAVE) */}
+      {/* 1. HERO HEADER HIJAU DENGAN LENGKUNGAN (WAVE) */}
       <section className="relative bg-[#0D5C3A] pt-36 pb-28 text-center text-white px-6">
         <div className="mx-auto max-w-3xl space-y-3 relative z-10">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
@@ -36,7 +36,7 @@ export default function ProfilPage() {
         </div>
       </section>
 
-      {/* 🚀 2. KONTEN VISI & MISI */}
+      {/* 2. KONTEN VISI & MISI */}
       <section className="space-y-8 mx-auto max-w-6xl px-6 pt-6">
         {/* Subtitle & Judul Section */}
         <div className="text-center mb-10">

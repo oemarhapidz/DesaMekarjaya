@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
+import { Camera } from "react-feather";
 
 export default async function DetailBeritaPage({ params }) {
   // 1. Ambil ID berita dari URL parameter (wajib di-await di Next.js versi baru)
@@ -62,7 +63,10 @@ export default async function DetailBeritaPage({ params }) {
 
           {/* Placeholder Gambar Utama Berita */}
           <div className="w-full h-64 md:h-96 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 border border-gray-200 shadow-inner">
-            📷 Dokumentasi Kegiatan Desa
+            <span className="inline-flex items-center gap-2">
+              <Camera size={18} aria-hidden="true" />
+              Dokumentasi Kegiatan Desa
+            </span>
           </div>
 
           {/* Isi Konten Berita */}

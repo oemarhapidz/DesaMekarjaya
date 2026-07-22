@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase"; // 🔗 Import koneksi Supabase milikmu
+import { BarChart2, DollarSign, Loader, PieChart, ShoppingBag } from "react-feather";
+import { supabase } from "@/lib/supabase"; // Import koneksi Supabase milikmu
 
 // Tipe data disesuaikan dengan struktur tabel Supabase
 export interface AnggaranData {
@@ -17,11 +18,11 @@ export interface AnggaranData {
 export default function TransparansiPage() {
   const [selectedTahun, setSelectedTahun] = useState<number>(2026);
 
-  // 🟢 State untuk menampung data asli dari Supabase & status loading
+  // State untuk menampung data asli dari Supabase & status loading
   const [dataSumber, setDataSumber] = useState<AnggaranData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // 🔄 Fetching data dari Supabase saat komponen dimuat
+  // Fetching data dari Supabase saat komponen dimuat
   useEffect(() => {
     const fetchAnggaran = async () => {
       setLoading(true);
@@ -180,12 +181,15 @@ export default function TransparansiPage() {
         {/* SPINNER/STATE LOADING */}
         {loading ? (
           <div className="bg-white p-12 rounded-2xl shadow-sm border border-gray-100 text-center text-gray-500">
-            ⏳ Memuat data anggaran dari database...
+            <span className="inline-flex items-center justify-center gap-2">
+              <Loader size={18} className="animate-spin" aria-hidden="true" />
+              Memuat data anggaran dari database...
+            </span>
           </div>
         ) : dataTerfilter.length === 0 ? (
           /* JIKA DATA KOSONG */
           <div className="bg-white p-12 rounded-2xl shadow-sm border border-gray-100 text-center space-y-4">
-            <div className="text-5xl">📊</div>
+            <BarChart2 className="mx-auto text-gray-400" size={48} aria-hidden="true" />
             <h3 className="text-xl font-bold text-gray-900">
               Data Tidak Ditemukan
             </h3>
@@ -211,7 +215,7 @@ export default function TransparansiPage() {
                   <span className="text-xs font-bold text-green-700 bg-green-50 px-2 py-1 rounded">
                     Pendapatan Desa
                   </span>
-                  <span className="text-2xl">💰</span>
+                  <DollarSign size={24} className="text-green-700" aria-hidden="true" />
                 </div>
                 <div>
                   <p className="text-2xl font-black text-gray-900">
@@ -252,7 +256,7 @@ export default function TransparansiPage() {
                   <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-1 rounded">
                     Belanja Desa
                   </span>
-                  <span className="text-2xl">🛍️</span>
+                  <ShoppingBag size={24} className="text-amber-700" aria-hidden="true" />
                 </div>
                 <div>
                   <p className="text-2xl font-black text-gray-900">
@@ -307,7 +311,15 @@ export default function TransparansiPage() {
                       ? "Surplus Anggaran"
                       : "Defisit Anggaran"}
                   </span>
-                  <span className="text-2xl">⚖️</span>
+                  <PieChart
+                    size={24}
+                    className={
+                      ringkasan.sisaAnggaran >= 0
+                        ? "text-green-700"
+                        : "text-red-700"
+                    }
+                    aria-hidden="true"
+                  />
                 </div>
                 <div>
                   <p

@@ -9,8 +9,10 @@ import {
   useMap,
 } from "react-leaflet";
 import L from "leaflet";
+import feather from "feather-icons";
+import { MapPin } from "react-feather";
 import "leaflet/dist/leaflet.css";
-import { PetaLokasiData, jenisConfig } from "./mockData";
+import { PetaLokasiData, jenisConfig, JenisLokasiIcon } from "./mockData";
 
 // Fix untuk Leaflet default marker icon yang tidak berfungsi di Next.js/webpack
 // karena leaflet tidak bisa resolve path icon default secara otomatis
@@ -21,9 +23,27 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
 });
 
+const featherIconNames: Record<JenisLokasiIcon, string> = {
+  trash: "trash-2",
+  refresh: "refresh-cw",
+  truck: "truck",
+  home: "archive",
+};
+
+function featherSvg(icon: JenisLokasiIcon, options: { size: number; color?: string }) {
+  return feather.icons[featherIconNames[icon]].toSvg({
+    width: options.size,
+    height: options.size,
+    color: options.color || "currentColor",
+    "stroke-width": 2.5,
+    "aria-hidden": "true",
+  });
+}
+
 // Fungsi helper untuk membuat custom SVG icon per jenis lokasi
 function buatSvgIcon(jenis: keyof typeof jenisConfig): L.DivIcon {
   const cfg = jenisConfig[jenis];
+  const markerIcon = featherSvg(cfg.icon, { size: 16, color: "white" });
   const svgHtml = `
     <div style="
       width: 36px;
@@ -43,7 +63,7 @@ function buatSvgIcon(jenis: keyof typeof jenisConfig): L.DivIcon {
         display: block;
         line-height: 1;
         margin-top: 2px;
-      ">${cfg.emoji}</span>
+      ">${markerIcon}</span>
     </div>`;
   return L.divIcon({
     html: svgHtml,
@@ -77,7 +97,10 @@ function ResetViewButton({ center, zoom }: { center: [number, number]; zoom: num
         boxShadow: "0 1px 5px rgba(0,0,0,0.2)",
       }}
     >
-      📍 Reset Peta
+      <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+        <MapPin size={13} aria-hidden="true" />
+        Reset Peta
+      </span>
     </button>
   );
 }
@@ -145,7 +168,17 @@ export default function MapComponent({ lokasi }: MapComponentProps) {
                   border: `1px solid ${jenisConfig[item.jenis].borderColor}`,
                   letterSpacing: "0.05em",
                 }}>
-                  {jenisConfig[item.jenis].emoji} {jenisConfig[item.jenis].label}
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: featherSvg(jenisConfig[item.jenis].icon, {
+                          size: 11,
+                          color: jenisConfig[item.jenis].textColor,
+                        }),
+                      }}
+                    />
+                    {jenisConfig[item.jenis].label}
+                  </span>
                 </span>
               </div>
 
@@ -180,7 +213,10 @@ export default function MapComponent({ lokasi }: MapComponentProps) {
                 border: "1px solid #f3f4f6",
               }}>
                 <div style={{ fontSize: "10px", color: "#9ca3af", marginBottom: "6px" }}>
-                  📍 {item.latitude.toFixed(5)}, {item.longitude.toFixed(5)}
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <MapPin size={11} aria-hidden="true" />
+                    {item.latitude.toFixed(5)}, {item.longitude.toFixed(5)}
+                  </span>
                 </div>
                 <a
                   href={`https://www.google.com/maps?q=${item.latitude},${item.longitude}`}

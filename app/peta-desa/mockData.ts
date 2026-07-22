@@ -12,6 +12,8 @@ export interface PetaLokasiData {
   updated_at: string;
 }
 
+export type JenisLokasiIcon = "trash" | "refresh" | "truck" | "home";
+
 export const mockPetaLokasi: PetaLokasiData[] = [
   {
     id: 1,
@@ -119,7 +121,7 @@ export const jenisConfig = {
     bgColor: "#dcfce7", // green-100
     borderColor: "#86efac", // green-300
     textColor: "#14532d", // green-900
-    emoji: "🗑️",
+    icon: "trash" satisfies JenisLokasiIcon,
   },
   pemilahan_sampah: {
     label: "Tempat Pemilahan",
@@ -127,7 +129,7 @@ export const jenisConfig = {
     bgColor: "#dbeafe", // blue-100
     borderColor: "#93c5fd", // blue-300
     textColor: "#1e3a8a", // blue-900
-    emoji: "♻️",
+    icon: "refresh" satisfies JenisLokasiIcon,
   },
   tps: {
     label: "TPS (Penampungan Sementara)",
@@ -135,7 +137,7 @@ export const jenisConfig = {
     bgColor: "#fef3c7", // amber-100
     borderColor: "#fcd34d", // amber-300
     textColor: "#78350f", // amber-900
-    emoji: "🏗️",
+    icon: "truck" satisfies JenisLokasiIcon,
   },
   tpa: {
     label: "TPA (Pemrosesan Akhir)",
@@ -143,6 +145,6 @@ export const jenisConfig = {
     bgColor: "#fee2e2", // red-100
     borderColor: "#fca5a5", // red-300
     textColor: "#7f1d1d", // red-900
-    emoji: "🏭",
+    icon: "home" satisfies JenisLokasiIcon,
   },
 } as const;

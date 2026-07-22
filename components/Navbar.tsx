@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { User } from "feather-icons-react";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
@@ -62,9 +63,10 @@ export default function Navbar() {
           <div className="hidden md:flex">
             <Link
               href="/login"
-              className="rounded-2xl bg-[#a6fe9d] px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-[#fafafa]"
+              className="rounded-2xl flex items-center gap-2 bg-[#a6fe9d] px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-[#fafafa]"
             >
-              Login Admin
+              <User size={16} />
+              <span>Login Admin</span>
             </Link>
           </div>
 

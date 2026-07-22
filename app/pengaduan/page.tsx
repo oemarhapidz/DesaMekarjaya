@@ -2,6 +2,15 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import {
+  Clipboard,
+  Edit3,
+  Inbox,
+  MessageCircle,
+  Send,
+  User,
+  X,
+} from "react-feather";
 import { supabase } from "@/lib/supabase"; // Sesuaikan path import supabase kamu
 
 // Tipe Data
@@ -54,6 +63,7 @@ export default function PengaduanPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchPengaduan();
   }, []);
 
@@ -142,10 +152,12 @@ export default function PengaduanPage() {
       fetchPengaduan();
 
       setTimeout(() => setSuccessMessage(null), 5000);
-    } catch (err: any) {
-      setErrorMessage(
-        err.message || "Terjadi kesalahan saat mengirim laporan.",
-      );
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Terjadi kesalahan saat mengirim laporan.";
+      setErrorMessage(message || "Terjadi kesalahan saat mengirim laporan.");
     } finally {
       setIsSubmitting(false);
     }
@@ -191,7 +203,8 @@ export default function PengaduanPage() {
         <div className="lg:col-span-5 bg-white p-6 rounded-2xl shadow-md border border-gray-100 space-y-6">
           <div>
             <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              <span>✍️</span> Buat Laporan Pengaduan
+              <Edit3 size={18} className="text-green-700" aria-hidden="true" />
+              Buat Laporan Pengaduan
             </h2>
             <p className="text-xs text-gray-400">
               Isi formulir di bawah ini dengan menyertakan detail masalah.
@@ -325,7 +338,7 @@ export default function PengaduanPage() {
                     }}
                     className="absolute top-1.5 right-1.5 bg-black/60 hover:bg-black/80 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center transition"
                   >
-                    ✕
+                    <X size={12} aria-hidden="true" />
                   </button>
                 </div>
               )}
@@ -336,18 +349,28 @@ export default function PengaduanPage() {
               disabled={isSubmitting}
               className="w-full bg-green-700 text-white font-bold py-2.5 px-4 rounded-xl hover:bg-green-600 shadow-md transition text-sm mt-2 disabled:opacity-50"
             >
-              {isSubmitting
-                ? "Mengirim Laporan..."
-                : "🚀 Kirim Pengaduan Warga"}
+              {isSubmitting ? (
+                "Mengirim Laporan..."
+              ) : (
+                <span className="inline-flex items-center justify-center gap-2">
+                  <Send size={16} aria-hidden="true" />
+                  Kirim Pengaduan Warga
+                </span>
+              )}
             </button>
           </form>
         </div>
 
         {/* KOLOM KANAN: LIST PENGADUAN DARI DATABASE */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-6 pt-15">
           <div>
             <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              <span>📋</span> Laporan Pengaduan Terbaru
+              <Clipboard
+                size={18}
+                className="text-green-700"
+                aria-hidden="true"
+              />
+              Laporan Pengaduan Terbaru
             </h2>
             <p className="text-xs text-gray-400">
               Daftar keluhan warga yang tersimpan di database desa.
@@ -360,7 +383,11 @@ export default function PengaduanPage() {
             </div>
           ) : pengaduanList.length === 0 ? (
             <div className="bg-white p-12 rounded-2xl shadow-sm border border-gray-100 text-center space-y-4">
-              <div className="text-5xl">📭</div>
+              <Inbox
+                className="mx-auto text-gray-400"
+                size={48}
+                aria-hidden="true"
+              />
               <h3 className="text-xl font-bold text-gray-900">
                 Belum Ada Pengaduan
               </h3>
@@ -420,8 +447,9 @@ export default function PengaduanPage() {
                     </div>
 
                     <div className="flex items-center gap-2 text-xs text-gray-400 bg-gray-50 p-2.5 rounded-xl border border-gray-100/50">
+                      <User size={14} aria-hidden="true" />
                       <span>
-                        👤 Pelapor:{" "}
+                        Pelapor:{" "}
                         <strong>{item.nama_pelapor || "Anonim"}</strong>
                       </span>
                       <span className="text-gray-300">|</span>
@@ -436,7 +464,7 @@ export default function PengaduanPage() {
                     {item.tanggapan_admin && (
                       <div className="bg-green-50/50 border border-green-100 p-4 rounded-xl space-y-1.5">
                         <div className="flex items-center gap-1 text-xs font-bold text-green-800">
-                          <span>💬</span>
+                          <MessageCircle size={14} aria-hidden="true" />
                           <span>Tanggapan Aparatur Desa:</span>
                         </div>
                         <p className="text-xs text-green-900 leading-relaxed">

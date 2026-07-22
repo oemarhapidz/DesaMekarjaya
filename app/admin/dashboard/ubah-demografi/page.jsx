@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { redirect } from "next/navigation";
+import { Save } from "react-feather";
 
 export default async function KelolaDemografiPage() {
   // 1. Tarik data demografi saat ini dari Supabase (ambil baris pertama saja)
@@ -142,9 +143,10 @@ export default async function KelolaDemografiPage() {
           <div className="pt-4 border-t mt-6">
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white font-bold py-2.5 px-4 rounded-xl hover:bg-blue-700 shadow-md transition duration-150"
+              className="w-full bg-blue-600 text-white font-bold py-2.5 px-4 rounded-xl hover:bg-blue-700 shadow-md transition duration-150 inline-flex items-center justify-center gap-2"
             >
-              💾 Simpan Perubahan Statistik
+              <Save size={16} aria-hidden="true" />
+              Simpan Perubahan Statistik
             </button>
           </div>
         </form>

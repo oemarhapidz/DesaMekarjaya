@@ -11,7 +11,7 @@ export default async function BeritaPage() {
 
   return (
     <div className="-mt-24 min-h-screen bg-[#F8FAFC] pb-20">
-      {/* 🚀 1. HERO HEADER HIJAU DENGAN LENGKUNGAN (WAVE) */}
+      {/* 1. HERO HEADER HIJAU DENGAN LENGKUNGAN (WAVE) */}
       <section className="relative bg-[#0D5C3A] pt-36 pb-28 text-center text-white px-6">
         <div className="mx-auto max-w-3xl space-y-3 relative z-10">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
@@ -38,7 +38,7 @@ export default async function BeritaPage() {
         </div>
       </section>
 
-      {/* 🚀 2. KONTEN DAFTAR BERITA */}
+      {/* 2. KONTEN DAFTAR BERITA */}
       <section className="mx-auto max-w-6xl px-6 pt-6 space-y-8">
         {/* Subtitle & Judul Section */}
         <div className="text-center mb-10">
