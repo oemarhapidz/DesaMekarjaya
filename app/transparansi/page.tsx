@@ -1,25 +1,52 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { mockAnggaran, AnggaranData } from "./mockData";
+import { supabase } from "@/lib/supabase"; // 🔗 Import koneksi Supabase milikmu
+
+// Tipe data disesuaikan dengan struktur tabel Supabase
+export interface AnggaranData {
+  id: number;
+  tahun: number;
+  kategori: string;
+  jenis: "pendapatan" | "belanja" | "pembiayaan";
+  anggaran: number;
+  realisasi: number;
+}
 
 export default function TransparansiPage() {
-  // State untuk melacak tahun anggaran yang dipilih
   const [selectedTahun, setSelectedTahun] = useState<number>(2026);
 
-  // TODO: ganti mockData dengan query Supabase ke tabel transparansi_anggaran
-  // Contoh koneksi nanti:
-  // const [anggaranList, setAnggaranList] = useState<AnggaranData[]>([]);
-  // useEffect(() => {
-  //   const fetchAnggaran = async () => {
-  //     const { data, error } = await supabase.from('transparansi_anggaran').select('*');
-  //     if (data) setAnggaranList(data);
-  //   };
-  //   fetchAnggaran();
-  // }, []);
+  // 🟢 State untuk menampung data asli dari Supabase & status loading
+  const [dataSumber, setDataSumber] = useState<AnggaranData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const dataSumber = mockAnggaran;
+  // 🔄 Fetching data dari Supabase saat komponen dimuat
+  useEffect(() => {
+    const fetchAnggaran = async () => {
+      setLoading(true);
+
+      if (!supabase) {
+        setDataSumber([]);
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("transparansi_anggaran")
+        .select("*")
+        .order("id", { ascending: true });
+
+      if (error) {
+        console.error("Gagal mengambil data anggaran:", error.message);
+      } else if (data) {
+        setDataSumber(data as AnggaranData[]);
+      }
+      setLoading(false);
+    };
+
+    fetchAnggaran();
+  }, []);
 
   // Mendapatkan daftar tahun unik yang tersedia di data sumber untuk dropdown filter
   const daftarTahunAvailable = useMemo(() => {
@@ -43,20 +70,23 @@ export default function TransparansiPage() {
 
     dataTerfilter.forEach((item) => {
       if (item.jenis === "pendapatan") {
-        totalPendapatanAnggaran += item.anggaran;
-        totalPendapatanRealisasi += item.realisasi;
+        totalPendapatanAnggaran += Number(item.anggaran);
+        totalPendapatanRealisasi += Number(item.realisasi);
       } else if (item.jenis === "belanja") {
-        totalBelanjaAnggaran += item.anggaran;
-        totalBelanjaRealisasi += item.realisasi;
+        totalBelanjaAnggaran += Number(item.anggaran);
+        totalBelanjaRealisasi += Number(item.realisasi);
       } else if (item.jenis === "pembiayaan") {
-        totalPembiayaanAnggaran += item.anggaran;
-        totalPembiayaanRealisasi += item.realisasi;
+        totalPembiayaanAnggaran += Number(item.anggaran);
+        totalPembiayaanRealisasi += Number(item.realisasi);
       }
     });
 
-    // Sisa Anggaran = Pendapatan - Belanja (ditambah/dikurang pembiayaan neto jika ada)
-    const sisaAnggaran = totalPendapatanRealisasi - totalBelanjaRealisasi - totalPembiayaanRealisasi;
-    const sisaAnggaranRencana = totalPendapatanAnggaran - totalBelanjaAnggaran - totalPembiayaanAnggaran;
+    const sisaAnggaran =
+      totalPendapatanRealisasi -
+      totalBelanjaRealisasi -
+      totalPembiayaanRealisasi;
+    const sisaAnggaranRencana =
+      totalPendapatanAnggaran - totalBelanjaAnggaran - totalPembiayaanAnggaran;
 
     return {
       totalPendapatanAnggaran,
@@ -102,22 +132,32 @@ export default function TransparansiPage() {
             Transparansi Anggaran Desa Mekarjaya
           </h1>
           <p className="text-green-100 text-sm md:text-base max-w-2xl leading-relaxed">
-            Wujud keterbukaan informasi tata kelola keuangan Anggaran Pendapatan dan Belanja Desa (APBDes) untuk mewujudkan Desa Mekarjaya yang bersih, akuntabel, dan maju.
+            Wujud keterbukaan informasi tata kelola keuangan Anggaran Pendapatan
+            dan Belanja Desa (APBDes) untuk mewujudkan Desa Mekarjaya yang
+            bersih, akuntabel, dan maju.
           </p>
         </div>
       </section>
 
       {/* FILTER & RINGKASAN UTAMA */}
       <main className="max-w-6xl mx-auto px-6 -mt-8 space-y-8">
-        
         {/* WIDGET FILTER TAHUN */}
         <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Filter Tahun Anggaran</h2>
-            <p className="text-xs text-gray-400">Pilih tahun untuk melihat rincian realisasi anggaran.</p>
+            <h2 className="text-lg font-bold text-gray-900">
+              Filter Tahun Anggaran
+            </h2>
+            <p className="text-xs text-gray-400">
+              Pilih tahun untuk melihat rincian realisasi anggaran.
+            </p>
           </div>
           <div className="flex items-center gap-2">
-            <label htmlFor="tahun-select" className="text-sm font-semibold text-gray-700">Tahun:</label>
+            <label
+              htmlFor="tahun-select"
+              className="text-sm font-semibold text-gray-700"
+            >
+              Tahun:
+            </label>
             <select
               id="tahun-select"
               value={selectedTahun}
@@ -137,13 +177,22 @@ export default function TransparansiPage() {
           </div>
         </div>
 
-        {/* JIKA DATA KOSONG */}
-        {dataTerfilter.length === 0 ? (
+        {/* SPINNER/STATE LOADING */}
+        {loading ? (
+          <div className="bg-white p-12 rounded-2xl shadow-sm border border-gray-100 text-center text-gray-500">
+            ⏳ Memuat data anggaran dari database...
+          </div>
+        ) : dataTerfilter.length === 0 ? (
+          /* JIKA DATA KOSONG */
           <div className="bg-white p-12 rounded-2xl shadow-sm border border-gray-100 text-center space-y-4">
             <div className="text-5xl">📊</div>
-            <h3 className="text-xl font-bold text-gray-900">Data Tidak Ditemukan</h3>
+            <h3 className="text-xl font-bold text-gray-900">
+              Data Tidak Ditemukan
+            </h3>
             <p className="text-sm text-gray-500 max-w-md mx-auto">
-              Maaf, data transparansi anggaran untuk tahun <strong>{selectedTahun}</strong> belum tersedia atau belum diunggah oleh admin.
+              Maaf, data transparansi anggaran untuk tahun{" "}
+              <strong>{selectedTahun}</strong> belum tersedia atau belum
+              diunggah oleh admin.
             </p>
             <button
               onClick={() => setSelectedTahun(2026)}
@@ -156,7 +205,6 @@ export default function TransparansiPage() {
           <>
             {/* CARD METRIK RINGKASAN */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              
               {/* CARD 1: PENDAPATAN */}
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                 <div className="flex justify-between items-start">
@@ -177,7 +225,11 @@ export default function TransparansiPage() {
                   <div className="flex justify-between text-xs font-semibold">
                     <span className="text-gray-500">Realisasi</span>
                     <span className="text-green-700">
-                      {hitungPersentase(ringkasan.totalPendapatanRealisasi, ringkasan.totalPendapatanAnggaran)}%
+                      {hitungPersentase(
+                        ringkasan.totalPendapatanRealisasi,
+                        ringkasan.totalPendapatanAnggaran,
+                      )}
+                      %
                     </span>
                   </div>
                   <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -186,7 +238,7 @@ export default function TransparansiPage() {
                       style={{
                         width: `${hitungPersentase(
                           ringkasan.totalPendapatanRealisasi,
-                          ringkasan.totalPendapatanAnggaran
+                          ringkasan.totalPendapatanAnggaran,
                         )}%`,
                       }}
                     ></div>
@@ -214,7 +266,11 @@ export default function TransparansiPage() {
                   <div className="flex justify-between text-xs font-semibold">
                     <span className="text-gray-500">Realisasi</span>
                     <span className="text-amber-700">
-                      {hitungPersentase(ringkasan.totalBelanjaRealisasi, ringkasan.totalBelanjaAnggaran)}%
+                      {hitungPersentase(
+                        ringkasan.totalBelanjaRealisasi,
+                        ringkasan.totalBelanjaAnggaran,
+                      )}
+                      %
                     </span>
                   </div>
                   <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -223,7 +279,7 @@ export default function TransparansiPage() {
                       style={{
                         width: `${hitungPersentase(
                           ringkasan.totalBelanjaRealisasi,
-                          ringkasan.totalBelanjaAnggaran
+                          ringkasan.totalBelanjaAnggaran,
                         )}%`,
                       }}
                     ></div>
@@ -232,52 +288,72 @@ export default function TransparansiPage() {
               </div>
 
               {/* CARD 3: SELISIH / SILPA */}
-              <div className={`p-6 rounded-2xl shadow-sm border space-y-4 ${
-                ringkasan.sisaAnggaran >= 0 
-                  ? "bg-green-50/50 border-green-100 text-green-950" 
-                  : "bg-red-50/50 border-red-100 text-red-950"
-              }`}>
+              <div
+                className={`p-6 rounded-2xl shadow-sm border space-y-4 ${
+                  ringkasan.sisaAnggaran >= 0
+                    ? "bg-green-50/50 border-green-100 text-green-950"
+                    : "bg-red-50/50 border-red-100 text-red-950"
+                }`}
+              >
                 <div className="flex justify-between items-start">
-                  <span className={`text-xs font-bold px-2 py-1 rounded ${
-                    ringkasan.sisaAnggaran >= 0 ? "text-green-700 bg-green-100" : "text-red-700 bg-red-100"
-                  }`}>
-                    {ringkasan.sisaAnggaran >= 0 ? "Surplus Anggaran" : "Defisit Anggaran"}
+                  <span
+                    className={`text-xs font-bold px-2 py-1 rounded ${
+                      ringkasan.sisaAnggaran >= 0
+                        ? "text-green-700 bg-green-100"
+                        : "text-red-700 bg-red-100"
+                    }`}
+                  >
+                    {ringkasan.sisaAnggaran >= 0
+                      ? "Surplus Anggaran"
+                      : "Defisit Anggaran"}
                   </span>
                   <span className="text-2xl">⚖️</span>
                 </div>
                 <div>
-                  <p className={`text-2xl font-black ${
-                    ringkasan.sisaAnggaran >= 0 ? "text-green-800" : "text-red-800"
-                  }`}>
+                  <p
+                    className={`text-2xl font-black ${
+                      ringkasan.sisaAnggaran >= 0
+                        ? "text-green-800"
+                        : "text-red-800"
+                    }`}
+                  >
                     {formatRupiah(Math.abs(ringkasan.sisaAnggaran))}
                   </p>
                   <p className="text-xs text-gray-400 mt-1">
-                    Rencana Surplus: {formatRupiah(ringkasan.sisaAnggaranRencana)}
+                    Rencana Surplus:{" "}
+                    {formatRupiah(ringkasan.sisaAnggaranRencana)}
                   </p>
                 </div>
                 <div className="text-xs leading-relaxed text-gray-500 pt-2 border-t border-gray-200/50">
-                  {ringkasan.sisaAnggaran >= 0 
+                  {ringkasan.sisaAnggaran >= 0
                     ? "Terdapat sisa anggaran lebih yang dapat dialokasikan untuk pembiayaan pembangunan periode berikutnya."
                     : "Belanja melebihi realisasi pendapatan. Defisit ditutup melalui penerimaan pembiayaan desa."}
                 </div>
               </div>
-
             </div>
 
             {/* VISUALISASI PROGRES PER KATEGORI */}
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-6">
               <div>
-                <h3 className="text-xl font-bold text-gray-900">Perbandingan Realisasi Per Pos Anggaran</h3>
-                <p className="text-sm text-gray-500">Visualisasi komparatif penyerapan anggaran per kategori kegiatan.</p>
+                <h3 className="text-xl font-bold text-gray-900">
+                  Perbandingan Realisasi Per Pos Anggaran
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Visualisasi komparatif penyerapan anggaran per kategori
+                  kegiatan.
+                </p>
               </div>
 
               <div className="space-y-6">
                 {dataTerfilter.map((item) => {
-                  const persen = hitungPersentase(item.realisasi, item.anggaran);
-                  
-                  // Menentukan warna bar berdasarkan jenis pos anggaran
+                  const persen = hitungPersentase(
+                    item.realisasi,
+                    item.anggaran,
+                  );
+
                   let barColor = "bg-green-600";
-                  let bgTagColor = "text-green-700 bg-green-50 border-green-100";
+                  let bgTagColor =
+                    "text-green-700 bg-green-50 border-green-100";
                   if (item.jenis === "belanja") {
                     barColor = "bg-amber-500";
                     bgTagColor = "text-amber-700 bg-amber-50 border-amber-100";
@@ -287,10 +363,15 @@ export default function TransparansiPage() {
                   }
 
                   return (
-                    <div key={item.id} className="space-y-2 border-b border-gray-50 pb-4 last:border-0 last:pb-0">
+                    <div
+                      key={item.id}
+                      className="space-y-2 border-b border-gray-50 pb-4 last:border-0 last:pb-0"
+                    >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                         <div className="flex items-center gap-2">
-                          <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${bgTagColor}`}>
+                          <span
+                            className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${bgTagColor}`}
+                          >
                             {item.jenis}
                           </span>
                           <h4 className="font-bold text-gray-900 text-sm sm:text-base">
@@ -298,10 +379,14 @@ export default function TransparansiPage() {
                           </h4>
                         </div>
                         <div className="text-xs sm:text-sm font-bold text-gray-800">
-                          {formatRupiah(item.realisasi)} <span className="text-gray-400 font-normal">dari</span> {formatRupiah(item.anggaran)}
+                          {formatRupiah(item.realisasi)}{" "}
+                          <span className="text-gray-400 font-normal">
+                            dari
+                          </span>{" "}
+                          {formatRupiah(item.anggaran)}
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center gap-4">
                         <div className="flex-grow h-3 bg-gray-100 rounded-full overflow-hidden">
                           <div
@@ -322,8 +407,13 @@ export default function TransparansiPage() {
             {/* TABEL RINCIAN DETAIL DATA */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="p-6 border-b border-gray-50 bg-white">
-                <h3 className="text-lg font-bold text-gray-900">Rincian Lembar APBDes Tahun {selectedTahun}</h3>
-                <p className="text-xs text-gray-400">Tabel data pos anggaran pendapatan, belanja, dan pembiayaan desa.</p>
+                <h3 className="text-lg font-bold text-gray-900">
+                  Rincian Lembar APBDes Tahun {selectedTahun}
+                </h3>
+                <p className="text-xs text-gray-400">
+                  Tabel data pos anggaran pendapatan, belanja, dan pembiayaan
+                  desa.
+                </p>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse text-sm">
@@ -331,8 +421,12 @@ export default function TransparansiPage() {
                     <tr className="bg-gray-50 border-b border-gray-100 text-gray-500 font-semibold text-xs uppercase tracking-wider">
                       <th className="px-6 py-4">Kategori Pos Anggaran</th>
                       <th className="px-6 py-4">Jenis</th>
-                      <th className="px-6 py-4 text-right">Anggaran (Rencana)</th>
-                      <th className="px-6 py-4 text-right">Realisasi (Aktual)</th>
+                      <th className="px-6 py-4 text-right">
+                        Anggaran (Rencana)
+                      </th>
+                      <th className="px-6 py-4 text-right">
+                        Realisasi (Aktual)
+                      </th>
                       <th className="px-6 py-4 text-right">Selisih</th>
                       <th className="px-6 py-4 text-center">Persentase</th>
                     </tr>
@@ -340,21 +434,29 @@ export default function TransparansiPage() {
                   <tbody className="divide-y divide-gray-100 text-gray-700">
                     {dataTerfilter.map((item) => {
                       const selisih = item.anggaran - item.realisasi;
-                      const persen = hitungPersentase(item.realisasi, item.anggaran);
+                      const persen = hitungPersentase(
+                        item.realisasi,
+                        item.anggaran,
+                      );
 
                       return (
-                        <tr key={item.id} className="hover:bg-gray-50/50 transition">
+                        <tr
+                          key={item.id}
+                          className="hover:bg-gray-50/50 transition"
+                        >
                           <td className="px-6 py-4 font-bold text-gray-900">
                             {item.kategori}
                           </td>
                           <td className="px-6 py-4 capitalize">
-                            <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded ${
-                              item.jenis === "pendapatan" 
-                                ? "bg-green-50 text-green-700" 
-                                : item.jenis === "belanja" 
-                                ? "bg-amber-50 text-amber-700" 
-                                : "bg-blue-50 text-blue-700"
-                            }`}>
+                            <span
+                              className={`inline-block text-xs font-medium px-2 py-0.5 rounded ${
+                                item.jenis === "pendapatan"
+                                  ? "bg-green-50 text-green-700"
+                                  : item.jenis === "belanja"
+                                    ? "bg-amber-50 text-amber-700"
+                                    : "bg-blue-50 text-blue-700"
+                              }`}
+                            >
                               {item.jenis}
                             </span>
                           </td>
@@ -364,19 +466,27 @@ export default function TransparansiPage() {
                           <td className="px-6 py-4 text-right font-medium text-gray-900">
                             {formatRupiah(item.realisasi)}
                           </td>
-                          <td className={`px-6 py-4 text-right font-semibold ${
-                            selisih === 0 ? "text-gray-400" : selisih > 0 ? "text-amber-600" : "text-green-600"
-                          }`}>
+                          <td
+                            className={`px-6 py-4 text-right font-semibold ${
+                              selisih === 0
+                                ? "text-gray-400"
+                                : selisih > 0
+                                  ? "text-amber-600"
+                                  : "text-green-600"
+                            }`}
+                          >
                             {selisih === 0 ? "-" : formatRupiah(selisih)}
                           </td>
                           <td className="px-6 py-4 text-center">
-                            <span className={`inline-block text-xs font-black px-2 py-0.5 rounded ${
-                              persen === 100 
-                                ? "bg-green-100 text-green-800" 
-                                : persen >= 50 
-                                ? "bg-amber-100 text-amber-800" 
-                                : "bg-red-100 text-red-800"
-                            }`}>
+                            <span
+                              className={`inline-block text-xs font-black px-2 py-0.5 rounded ${
+                                persen === 100
+                                  ? "bg-green-100 text-green-800"
+                                  : persen >= 50
+                                    ? "bg-amber-100 text-amber-800"
+                                    : "bg-red-100 text-red-800"
+                              }`}
+                            >
                               {persen}%
                             </span>
                           </td>

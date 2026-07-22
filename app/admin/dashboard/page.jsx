@@ -54,6 +54,19 @@ export default function AdminDashboard() {
               Ubah Data Statistik
             </Link>
           </div>
+
+          <div className="p-6 bg-yellow-50 rounded-xl border border-yellow-100 space-y-2">
+            <h3 className="font-bold text-yellow-900">Kelola transparansi</h3>
+            <p className="text-sm text-yellow-700">
+              Update data transparansi desa terbaru.
+            </p>
+            <Link
+              href="/admin/dashboard/kelola-anggaran"
+              className="inline-block text-xs bg-yellow-600 hover:bg-yellow-700 text-white font-semibold px-3 py-1.5 rounded-lg transition text-center"
+            >
+              Ubah Data Transparansi
+            </Link>
+          </div>
         </div>
       </div>
     </div>
