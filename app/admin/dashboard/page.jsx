@@ -1,4 +1,5 @@
 // app/admin/dashboard/page.jsx
+import LogoutButton from "@/components/LogoutButton";
 import Link from "next/link";
 
 export default function AdminDashboard() {
@@ -35,7 +36,7 @@ export default function AdminDashboard() {
               Buka Manajemen Berita
             </Link>
             <Link
-              href="/berita"
+              href="/admin/dashboard/kelola-berita"
               className="text-sm font-semibold text-green-600 hover:underline"
             >
               Lihat Semua berita
@@ -67,6 +68,25 @@ export default function AdminDashboard() {
               Ubah Data Transparansi
             </Link>
           </div>
+
+          <div className="p-6 bg-purple-50 rounded-xl border border-purple-100 space-y-2">
+            <h3 className="font-bold text-purple-900">
+              Kelola pengaduan Masyarakat
+            </h3>
+            <p className="text-sm text-purple-700">
+              Update pengaduan masyarakat terbaru.
+            </p>
+            <Link
+              href="/admin/dashboard/kelola-pengaduan"
+              className="inline-block text-xs bg-purple-600 hover:bg-purple-700 text-white font-semibold px-3 py-1.5 rounded-lg transition text-center"
+            >
+              Kelola Pengaduan
+            </Link>
+          </div>
+        </div>
+        <div>
+          {/* Panggil komponen di tempat yang kamu inginkan */}
+          <LogoutButton />
         </div>
       </div>
     </div>

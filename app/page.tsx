@@ -44,11 +44,11 @@ export default async function HomePage() {
         <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#F8FAFC] via-[#F8FAFC]/60 to-transparent" />
 
         {/* 3. KONTEN TEKS & BUTTON (Di Kiri) */}
-        <div className="pt-15 relative z-10 max-w-2xl space-y-6 text-left">
+        <div className="pt-25 relative z-10 max-w-2xl space-y-6 text-left">
           <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 backdrop-blur-sm border border-white/20">
             <span className="h-2 w-2 rounded-full bg-amber-400" />
             <span className="text-xs font-semibold uppercase tracking-widest text-white">
-              Portal Resmi Desa Mekarjaya
+              Portal Desa Mekarjaya
             </span>
           </div>
 
@@ -66,13 +66,13 @@ export default async function HomePage() {
           <div className="flex flex-wrap gap-4 pt-2">
             <Link
               href="/profil"
-              className="rounded-xl border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white hover:text-black"
+              className="rounded-xl  bg-white px-6 py-3.5 text-sm font-semibold text-emerald-600 transition hover:bg-gray-700 hover:text-white"
             >
               Jelajahi Profil Desa
             </Link>
             <Link
               href="/pengaduan"
-              className="rounded-xl border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white hover:text-black"
+              className="rounded-xl  bg-white px-6 py-3.5 text-sm font-semibold text-emerald-600 transition hover:bg-gray-700 hover:text-white"
             >
               Layanan Pengaduan
             </Link>

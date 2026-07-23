@@ -1,11 +1,21 @@
+"use client";
+import { useState } from "react";
+import { Maximize2, X } from "feather-icons-react"; // atau lucide-react
 export default function ProfilPage() {
   const misiList = [
-    "Meningkatkan kualitas pelayanan publik melalui digitalisasi sistem administrasi desa.",
-    "Mengembangkan potensi ekonomi lokal melalui pemberdayaan UMKM dan pertanian berkelanjutan.",
-    "Membangun infrastruktur yang merata dan ramah lingkungan untuk seluruh wilayah desa.",
-    "Menjaga kelestarian budaya dan kearifan lokal sebagai identitas masyarakat desa.",
-    "Mewujudkan tata kelola pemerintahan yang bersih, transparan, dan akuntabel.",
+    "Meningkatkan Profesionalisme Pelayanan Publik.",
+    "Meningkatkan Kualitas Sumber Daya Manusia bagi Aparatur Pemerintahan Desa.",
+    "Meningkatkan Pembangunan Fisik dan Non fisik di berbagai Bidang.",
+    "Menumbuhkenbangkan nilai-nilai Keagamaan dan melastarikan Seni dan Budaya serta kearifan lokal.",
+    "Meningkatkan Ketersediaaan dan kualitas Infrastruktur Pemerintahan Desa.",
+    "Penertiban Adminitrasi Pemerintahan Desa",
+    "Meningkatkan Pertisipasi Swadaya Masyarakat dan Sektor Swasta dalam Kegiatan Pembangunan dan Kegiatan Kemasyarakatan Desa",
+    "Menggali Potensi Desa dalam rangka Peningkatan Pendapatan Asli Desa",
+    "Meningkatkan Kerukunan kerjasama antar Lembaga Desa",
+    "Peningkatan Pemberdayaan Masyarakat dan Kemampuan Daya Saing Sosial ekonomi",
+    "Meningkatkan Kepedulian Sosial Masyarakat",
   ];
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   return (
     <div className="-mt-24 min-h-screen bg-[#F8FAFC] pb-20">
@@ -51,12 +61,16 @@ export default function ProfilPage() {
         {/* Sejarah Desa */}
         <div className="rounded-3xl border border-slate-100 bg-white p-8 shadow-sm">
           <h3 className="text-xl font-bold text-slate-900 mb-4">
-            Sejarah Desa
+            Sejarah Singkat Desa
           </h3>
-          <p className="text-sm leading-relaxed text-slate-600">
+          <p className="text-sm text-justify leading-relaxed text-slate-600">
             Desa Mekarjaya memiliki sejarah yang kaya dan menarik. Dengan
             perkembangan zaman, desa ini terus berinovasi untuk mencapai tujuan
-            pembangunan yang berkelanjutan.
+            pembangunan yang berkelanjutan. Desa Mekarjaya berdiri pada tahun
+            1980, Yang di Pimpin Kepala Desa Pertama M. Ranu dan terjadi
+            Pemekaran Pada Tahun 2005 dari Kecamatan Cikampek Ke Kacamatan
+            Purwasari terbentuk Pemimpin Desa atau Kepala. Desa Mekarjaya di
+            bagi menjadi 4 Dusun yaitu : Karajan, Tamelang, Serang dan Cilalung.
           </p>
         </div>
 
@@ -87,9 +101,8 @@ export default function ProfilPage() {
             {/* Kutipan Visi dengan Garis Vertikal */}
             <div className="border-l-2 border-emerald-500 pl-4 py-1">
               <p className="text-sm italic leading-relaxed text-slate-600">
-                “Terwujudnya Desa Mekarjaya yang Maju, Mandiri, Sejahtera, dan
-                Berbudaya melalui Tata Kelola Pemerintahan yang Transparan dan
-                Inovatif pada Tahun 2030.”
+                “Menjadi Desa Mekarjaya yang Aman Mendiri, Maju Sejatera dan
+                berakhlakul Karimah.”
               </p>
             </div>
           </div>
@@ -121,7 +134,7 @@ export default function ProfilPage() {
               {misiList.map((misi, index) => (
                 <li key={index} className="flex items-start gap-3">
                   <span className="text-xs font-bold text-emerald-600 pt-0.5 min-w-[20px]">
-                    0{index + 1}
+                    {index + 1}.
                   </span>
                   <p className="text-xs sm:text-sm leading-relaxed text-slate-600">
                     {misi}
@@ -130,6 +143,50 @@ export default function ProfilPage() {
               ))}
             </ul>
           </div>
+          <div className="-mt-125 rounded-3xl border border-slate-100 bg-white p-8 shadow-sm">
+            <h3 className="text-xl font-bold text-slate-900 mb-4">
+              Struktur Organisasi
+            </h3>
+            <button
+              onClick={() => setIsFullscreen(true)}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer"
+            >
+              <Maximize2 size={14} />
+              <span>Lihat Gambar</span>
+            </button>
+            <img
+              src="/struktur-organisasi-desa.jpeg"
+              alt="Struktur Organisasi Desa Mekarjaya"
+              className="w-full h-auto rounded-lg"
+            />
+          </div>
+          {/* Modal / Popup Fullscreen */}
+          {isFullscreen && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+              onClick={() => setIsFullscreen(false)} // Klik di luar area untuk menutup
+            >
+              <div
+                className="relative max-h-[90vh] max-w-[90vw] overflow-auto rounded-2xl bg-white p-2"
+                onClick={(e) => e.stopPropagation()} // Mencegah modal tertutup saat gambar diklik
+              >
+                {/* Tombol Tutup (X) */}
+                <button
+                  onClick={() => setIsFullscreen(false)}
+                  className="absolute top-4 right-4 z-10 rounded-full bg-black/60 p-2 text-white transition hover:bg-black cursor-pointer"
+                >
+                  <X size={20} />
+                </button>
+
+                {/* Gambar Full Resolution */}
+                <img
+                  src="/struktur-organisasi-desa.jpeg"
+                  alt="Struktur Organisasi Desa Mekarjaya Full"
+                  className="h-auto max-h-[85vh] w-auto rounded-xl object-contain mx-auto"
+                />
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </div>
