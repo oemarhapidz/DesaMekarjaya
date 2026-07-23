@@ -1,36 +1,65 @@
-// app/admin/dashboard/tambah-berita/page.jsx
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { redirect } from "next/navigation";
-import { Send } from "react-feather";
+import { Send } from "feather-icons-react";
 
 export default function TambahBeritaPage() {
-  // Logika menyimpan berita langsung ke Supabase
+  // Logika menyimpan berita + upload gambar ke Supabase
   async function handleTambahBerita(formData) {
     "use server"; // Berjalan di sisi server
 
     const judul = formData.get("judul");
     const kategori = formData.get("kategori");
     const isi = formData.get("isi");
+    const sampulFile = formData.get("sampul"); // Mengambil file dari input
 
-    // Validasi sederhana agar data tidak kosong
+    // Validasi sederhana agar data teks tidak kosong
     if (!judul || !kategori || !isi) return;
 
-    // Masukkan data ke tabel 'berita' di Supabase
+    let imageUrl = null;
+
+    // Logika Upload Gambar ke Supabase Storage (jika file diunggah)
+    if (sampulFile && sampulFile.size > 0) {
+      const fileExt = sampulFile.name.split(".").pop();
+      const fileName = `${Date.now()}_${Math.random()}.${fileExt}`;
+
+      // 1. Upload ke Storage Bucket 'berita_sampul'
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("berita_sampul")
+        .upload(fileName, sampulFile, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error("Gagal mengunggah gambar sampul:", uploadError.message);
+        return;
+      }
+
+      // 2. Dapatkan URL Publik Gambar
+      const { data: publicUrlData } = supabase.storage
+        .from("berita_sampul")
+        .getPublicUrl(fileName);
+
+      imageUrl = publicUrlData.publicUrl;
+    }
+
+    // 3. Masukkan data berita + URL Gambar ke tabel 'berita'
     const { error } = await supabase.from("berita").insert([
       {
         judul: judul,
         kategori: kategori,
         isi: isi,
+        gambar: imageUrl, // Kolom 'gambar' di database
       },
     ]);
 
     if (error) {
-      console.error("Gagal menambah berita:", error);
+      console.error("Gagal menambah berita:", error.message);
       return;
     }
 
-    // Jika sukses memasukkan data, lempar admin kembali ke dashboard utama
+    // Jika sukses, redirect kembali ke dashboard
     redirect("/admin/dashboard");
   }
 
@@ -97,7 +126,25 @@ export default function TambahBeritaPage() {
             </select>
           </div>
 
-          {/* 3. Input Isi Berita */}
+          {/* 3. Input Sampul Gambar Berita */}
+          <div className="space-y-1">
+            <label
+              htmlFor="sampul"
+              className="block text-sm font-semibold text-gray-700"
+            >
+              Sampul Berita{" "}
+              <span className="text-gray-400 font-normal">(Opsional)</span>
+            </label>
+            <input
+              type="file"
+              id="sampul"
+              name="sampul"
+              accept="image/*"
+              className="mt-1 block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition cursor-pointer"
+            />
+          </div>
+
+          {/* 4. Input Isi Berita */}
           <div className="space-y-1">
             <label
               htmlFor="isi"
@@ -108,7 +155,7 @@ export default function TambahBeritaPage() {
             <textarea
               id="isi"
               name="isi"
-              rows="6"
+              rows={6}
               placeholder="Tuliskan detail berita atau laporan kegiatan di sini..."
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600 text-sm transition"
               required
